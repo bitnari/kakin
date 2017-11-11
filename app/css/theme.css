@@ -1,0 +1,19 @@
+:root {
+	--white: #f1f2f3;
+	--white-darken-1: #e1e2e3;
+	--white-darken-2: #414243;
+	--blue: #1396f2;
+	--grey: #303030;
+	--font: 'NanumSquare', sans-serif;
+
+	--background: var(--white);
+
+	--button-background: var(--blue);
+	--button-color: var(--white);
+
+	--textbox-background: var(--white);
+
+	--nav-background: var(--grey);
+	--nav-color: var(--white);
+	--nav-height: 64px;
+}
