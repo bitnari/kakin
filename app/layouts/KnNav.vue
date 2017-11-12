@@ -31,8 +31,8 @@
 </style>
 
 <script>
-	import KnBox from "./KnBox.vue";
-	import KnIcon from "./KnIcon.vue";
+	import KnBox from "../components/KnBox.vue";
+	import KnIcon from "../components/KnIcon.vue";
 
 	export default {
 		components: {

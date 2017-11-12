@@ -4,9 +4,11 @@
 	--white-darken-2: #414243;
 	--blue: #1396f2;
 	--grey: #303030;
+	--grey-darken-1: #202020;
 	--font: 'NanumSquare', sans-serif;
 
-	--background: var(--white);
+	--background: url('../img/background.jpg');
+	--background-color: var(--white);
 
 	--button-background: var(--blue);
 	--button-color: var(--white);

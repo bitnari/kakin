@@ -13,7 +13,7 @@ Vue.use(VueRouter);
 
 const store = new Vuex.Store({
 	state: {
-		logon: false,
+		loggedIn: false,
 		username: '',
 		credit: 0,
 		eventCredit: 0
@@ -21,7 +21,7 @@ const store = new Vuex.Store({
 
 	mutations: {
 		login(state, userData) {
-			state.logon = true;
+			state.loggedIn = true;
 			state.username = userData.username;
 			state.credit = userData.credit;
 			state.eventCredit = userData.eventCredit;

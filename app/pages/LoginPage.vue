@@ -1,16 +1,11 @@
 <template>
 	<kn-main>
 		<kn-box class="main-box">
-			<kn-box class="login-box" column>
-				<kn-box class="login-jumbotron">Welcome!</kn-box>
-				<kn-box class="in-box" column>
-					<kn-textbox text="학번"></kn-textbox>
-					<kn-textbox text="비밀번호" password></kn-textbox>
-				</kn-box>
-				<kn-button class="button">
-					<kn-icon icon="ios-send-outline"></kn-icon>
-				</kn-button>
-			</kn-box>
+			<div class="background-tint"></div>
+
+			<transition name="login-fade" mode="out-in">
+				<component :is="context"></component>
+			</transition>
 		</kn-box>
 	</kn-main>
 </template>
@@ -22,53 +17,60 @@
 		align-items: center;
 		justify-content: center;
 		flex: 1;
+		background: var(--background);
+		position: relative;
 	}
 
-	.login-box {
-		background: var(--white-darken-1);
-		width: 40vmin;
-		height: 40vmin;
+	.background-tint {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: var(--background-color);
+		opacity: .2;
 	}
 
-	.in-box {
-		padding: 5px 10px;
-		background: var(--white-darken-1);
+	.login-fade-enter-active {
+		transition: transform .8s cubic-bezier(1, 0, 0.25, 1.5);
+		transform: scale(0);
 	}
 
-	.login-jumbotron {
-		background: var(--blue);
-		font-weight: 100;
-		font-size: 2rem;
-		padding: 10px 30px;
-		color: var(--white);
-		align-items: flex-end;
-		height: 10vmin;
+	.login-fade-enter-to {
+		transform: scale(1);
 	}
 
-	.button {
-		flex: 1;
-		font-size: 2rem !important;
-		color: var(--white);
-		background: var(--blue) !important;
-		margin: 15px;
-		margin-top: 5px;
+	.login-fade-leave-active {
+		transition: transform .6s ease;
+	}
+
+	.login-fade-leave-to {
+		transform: rotate(45deg) scale(0);
 	}
 </style>
 
 <script>
 	import KnBox from "../components/KnBox.vue";
-	import KnButton from "../components/KnButton.vue";
-	import KnIcon from "../components/KnIcon.vue";
-	import KnMain from "../components/KnMain.vue";
-	import KnTextbox from "../components/KnTextbox.vue";
+	import KnLoginDialog from "../layouts/KnLoginDialog.vue";
+	import KnUserDialog from "../layouts/KnUserDialog.vue";
+	import KnMain from "../layouts/KnMain.vue";
 
 	export default {
 		components: {
 			KnBox,
-			KnButton,
-			KnIcon,
-			KnMain,
-			KnTextbox
+			KnLoginDialog,
+			KnUserDialog,
+			KnMain
+		},
+
+		computed: {
+			loggedIn() {
+				return this.$store.state.loggedIn;
+			},
+
+			context() {
+				return this.loggedIn ? 'kn-user-dialog' : 'kn-login-dialog';
+			}
 		}
 	};
 </script>

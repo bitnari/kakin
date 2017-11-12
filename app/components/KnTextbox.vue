@@ -1,5 +1,5 @@
 <template>
-	<input type="text" class="kn-textbox" :placeholder="text" :type="type">
+	<input class="kn-textbox" :placeholder="text" :type="type">
 </template>
 
 <script>
@@ -10,14 +10,9 @@
 				default: ""
 			},
 
-			password: {
-				type: Boolean
-			}
-		},
-
-		computed: {
-			type() {
-				return this.password ? "password" : "text";
+			type: {
+				type: String,
+				default: "text"
 			}
 		}
 	};
