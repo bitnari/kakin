@@ -1,5 +1,5 @@
 <template>
-	<input class="kn-textbox" :placeholder="text" :type="type">
+	<input class="kn-textbox" :placeholder="text" :type="type" :required="required">
 </template>
 
 <script>
@@ -13,6 +13,10 @@
 			type: {
 				type: String,
 				default: "text"
+			},
+
+			required: {
+				type: Boolean
 			}
 		}
 	};

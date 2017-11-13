@@ -1,14 +1,14 @@
 <template>
-	<form @submit="handleLogin($event)" class="submit-box" v-show="!loggedIn" key="login">
+	<form @submit="handleLogin($event)" class="submit-box" key="login">
 		<kn-box class="login-box" column>
 			<kn-box class="login-jumbotron">Welcome!</kn-box>
 			<kn-box class="in-box" column>
 				<kn-box class="id-box">
-					<kn-textbox text="학년" type="number"></kn-textbox>
-					<kn-textbox text="반" type="number"></kn-textbox>
-					<kn-textbox text="번호" type="number"></kn-textbox>
+					<kn-textbox text="학년" type="number" required></kn-textbox>
+					<kn-textbox text="반" type="number" required></kn-textbox>
+					<kn-textbox text="번호" type="number" required></kn-textbox>
 				</kn-box>
-				<kn-textbox text="비밀번호" type="password"></kn-textbox>
+				<kn-textbox text="비밀번호" type="password" required></kn-textbox>
 			</kn-box>
 			<kn-button class="button">
 				<kn-icon icon="ios-send-outline"></kn-icon>
@@ -19,7 +19,7 @@
 
 <style scoped>
 	@import "theme";
-	
+
 	.submit-box {
 		position: relative;
 	}
@@ -79,7 +79,8 @@
 				this.$store.commit('login', {
 					username: "Khinenw",
 					credit: 0,
-					eventCredit: 0
+					eventCredit: 0,
+					emailHash: '099e07441a328e91f409964066dd37e1'
 				});
 
 				ev.preventDefault();

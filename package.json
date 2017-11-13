@@ -41,6 +41,7 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "ionicons": "^3.0.0",
+    "spinkit": "^1.2.5",
     "vue": "^2.5.3",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",

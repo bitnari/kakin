@@ -25,6 +25,7 @@ const store = new Vuex.Store({
 			state.username = userData.username;
 			state.credit = userData.credit;
 			state.eventCredit = userData.eventCredit;
+			state.emailHash = userData.emailHash;
 		}
 	}
 });

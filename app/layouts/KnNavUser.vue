@@ -1,6 +1,6 @@
 <template>
 	<kn-box class="user" :class="{'logged-in': loggedIn}">
-		<img src="../img/user.svg"></img>
+		<kn-gravatar :hash="emailHash" :size="44" v-if="loggedIn"></kn-gravatar>
 		<span>{{username}}</span>
 	</kn-box>
 </template>
@@ -14,39 +14,42 @@
 		overflow: hidden;
 		justify-content: flex-end;
 		transition: all .5s ease;
+		align-items: center;
 
 		&.logged-in {
 			padding: 10px;
 			width: 200px;
 		}
 
-		& img {
-			width: 44px;
-			height: 44px;
-		}
-
 		& span {
 			line-height: 44px;
-			width: 56px;
 			color: #fff;
-			padding-left: 10px;
+			padding-left: 15px;
 			font-size: 1rem;
 			font-family: var(--font);
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 	}
 </style>
 
 <script>
 	import KnBox from "../components/KnBox.vue";
+	import KnGravatar from "../components/KnGravatar.vue";
 
 	export default {
 		components: {
-			KnBox
+			KnBox,
+			KnGravatar
 		},
 
 		computed: {
 			username() {
 				return this.$store.state.username;
+			},
+
+			emailHash() {
+				return this.$store.state.emailHash;
 			},
 
 			loggedIn() {

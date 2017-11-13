@@ -1,10 +1,8 @@
 <template>
 	<kn-box class="user" column>
-		<div class="user-image-wrapper">
-			<img class="user-image" src="https://www.gravatar.com/avatar/099e07441a328e91f409964066dd37e1?s=250">
-		</div>
+		<kn-gravatar :hash="emailHash" :size="106" dark></kn-gravatar>
 
-		<h3 class="user-name">
+		<h3 class="user-name" :title="username">
 			{{username}}
 		</h3>
 
@@ -41,21 +39,9 @@
 			font-size: 2rem;
 			font-weight: 100;
 			margin-top: 20px;
-		}
-
-		& .user-image-wrapper {
-			width: 75px;
-			height: 75px;
-			transform: rotate(45deg);
+			width: 80%;
 			overflow: hidden;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-
-			& .user-image {
-				transform: rotate(-45deg);
-				width: 106px;
-			}
+			text-overflow: ellipsis;
 		}
 
 		& .user-information {
@@ -87,15 +73,21 @@
 
 <script>
 	import KnBox from "../components/KnBox.vue";
+	import KnGravatar from "../components/KnGravatar.vue";
 
 	export default {
 		components: {
-			KnBox
+			KnBox,
+			KnGravatar
 		},
 
 		computed: {
 			username() {
 				return this.$store.state.username;
+			},
+
+			emailHash() {
+				return this.$store.state.emailHash;
 			},
 
 			credit() {
