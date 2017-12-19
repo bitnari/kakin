@@ -4,11 +4,11 @@
 			<kn-box class="login-jumbotron">Welcome!</kn-box>
 			<kn-box class="in-box" column>
 				<kn-box class="id-box">
-					<kn-textbox text="학년" type="number" required></kn-textbox>
-					<kn-textbox text="반" type="number" required></kn-textbox>
-					<kn-textbox text="번호" type="number" required></kn-textbox>
+					<kn-textbox ref="grade" text="학년" type="number" required></kn-textbox>
+					<kn-textbox ref="class" text="반" type="number" required></kn-textbox>
+					<kn-textbox ref="number" text="번호" type="number" required></kn-textbox>
 				</kn-box>
-				<kn-textbox text="비밀번호" type="password" required></kn-textbox>
+				<kn-textbox ref="password" text="비밀번호" type="password" required></kn-textbox>
 			</kn-box>
 			<kn-button class="button">
 				<kn-icon icon="ios-send-outline"></kn-icon>
@@ -61,6 +61,8 @@
 </style>
 
 <script>
+	import Gokin from "../js/gokin-api";
+
 	import KnBox from "../components/KnBox.vue";
 	import KnButton from "../components/KnButton.vue";
 	import KnIcon from "../components/KnIcon.vue";
@@ -76,11 +78,18 @@
 
 		methods: {
 			handleLogin(ev) {
-				this.$store.commit('login', {
-					username: "Khinenw",
-					credit: 0,
-					eventCredit: 0,
-					emailHash: '099e07441a328e91f409964066dd37e1'
+				Gokin.login(
+					this.$refs.grade.value,
+					this.$refs['class'].value,
+					this.$refs.number.value,
+					this.$refs.password.value
+				).then((user) => {
+					this.$store.commit('login', {
+						username: user.id,
+						credit: user.credit,
+						eventCredit: user.eventCredit,
+						user
+					});
 				});
 
 				ev.preventDefault();

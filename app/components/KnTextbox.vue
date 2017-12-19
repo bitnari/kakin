@@ -18,6 +18,12 @@
 			required: {
 				type: Boolean
 			}
+		},
+
+		computed: {
+			value() {
+				return this.$el.value;
+			}
 		}
 	};
 </script>
