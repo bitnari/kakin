@@ -35,14 +35,18 @@ class StatusError extends Error {
 class Gokin {
 	static async login(grade, classId, id, password) {
 		try {
-			const loginData = await Gokin.request('verify')({grade, class: classId, id, password})
+			const loginData = await Gokin.request('verify')({
+				grade: parseInt(grade),
+				class: parseInt(classId),
+				id: parseInt(id),
+				password})
 			return User.fromToken(loginData.token);
 		} catch(err) {
 			throw err;
 		}
 	}
 
-	static async request(methodName) {
+	static request(methodName) {
 		return async (payload) => {
 			const request = await fetch(`/api/v${API_VERSION}/${methodName}`, {
 				headers: {
@@ -96,4 +100,5 @@ class User {
 	}
 }
 
+window.Gokin = Gokin;
 export default Gokin;

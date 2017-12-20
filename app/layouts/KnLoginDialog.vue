@@ -62,7 +62,6 @@
 
 <script>
 	import Gokin from "../js/gokin-api";
-
 	import KnBox from "../components/KnBox.vue";
 	import KnButton from "../components/KnButton.vue";
 	import KnIcon from "../components/KnIcon.vue";
