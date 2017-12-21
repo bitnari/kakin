@@ -8,6 +8,7 @@ import "whatwg-fetch";
 import App from "./App.vue";
 
 import routes from "./js/routes";
+import WebEnvironment from "./js/environment.web.js";
 
 Vue.use(AsyncComputed)
 Vue.use(Vuex);
@@ -42,3 +43,5 @@ new Vue({
 		return h(App);
 	}
 });
+
+if(!window.environment) window.environment = WebEnvironment;

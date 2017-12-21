@@ -13,9 +13,15 @@
 				</kn-box>
 				<kn-textbox ref="password" text="비밀번호" type="password" required></kn-textbox>
 			</kn-box>
-			<kn-button class="button">
-				<kn-icon icon="ios-send-outline"></kn-icon>
-			</kn-button>
+			<kn-box>
+				<kn-button class="button">
+					<kn-icon icon="ios-send-outline"></kn-icon>
+				</kn-button>
+
+				<kn-button class="button demo-button" type="button" :click="demo">
+					Demo
+				</kn-button>
+			</kn-box>
 		</kn-box>
 	</form>
 </template>
@@ -66,6 +72,10 @@
 		margin: 15px;
 		margin-top: 5px;
 	}
+
+	.demo-button {
+		font-size: 1.3rem !important;
+	}
 </style>
 
 <script>
@@ -74,6 +84,8 @@
 	import KnButton from "../components/KnButton.vue";
 	import KnIcon from "../components/KnIcon.vue";
 	import KnTextbox from "../components/KnTextbox.vue";
+
+	import swal from "sweetalert2";
 
 	export default {
 		components: {
@@ -97,12 +109,38 @@
 						eventCredit: user.eventCredit,
 						user
 					});
+
+					setTimeout(() => window.environment.play(user), 5000);
+
 				}).catch((err) => {
-					//TODO check for exception
-					// Invalid ID or wrong password
+					if(!err instanceof Gokin.StatusError) {
+						swal("Oops!", "에러가 발생했습니다. T_T<br>카운터에 문의해주세요.", "error");
+					} else{
+						switch(err.status) {
+							case 2:
+								swal("아이디가 잘못되었습니다.", "학년 반 번호를 다시 확인해주세요.", "warning");
+								break;
+
+							case 4:
+								swal("비밀번호가 잘못되었습니다.", "비밀번호를 다시 한 번 확인해주세요.", "warning");
+								break;
+
+							case 10:
+								swal("계정을 만들어주세요!",
+									"현재 학번에 해당하는 계정이 없습니다.<br>카운터에서 계정을 만들어주세요.", "warning");
+								break;
+
+							default:
+								swal("Oops!", "에러가 발생했습니다. T_T<br>카운터에 문의해주세요.", "error");
+						}
+					}
 				});
 
 				ev.preventDefault();
+			},
+
+			demo() {
+				window.environment.demonstrate();
 			}
 		}
 	}

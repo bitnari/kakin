@@ -1,5 +1,5 @@
 <template>
-	<button class="kn-button" @click="handleClick">
+	<button class="kn-button" @click="handleClick" :type="type">
 		<div class="gradient-backdrop"></div>
 		<div class="button-content">
 			<slot></slot>
@@ -52,6 +52,11 @@
 			click: {
 				type: Function,
 				default() {}
+			},
+
+			type: {
+				type: String,
+				default: "submit"
 			}
 		},
 

@@ -10,7 +10,10 @@ const API_RESPONSE = {
 	4: "Wrong password",
 	5: "Format of token is incorrect",
 	6: "Token does not exist or expired",
-	7: "Insufficient gold"
+	7: "Insufficient gold",
+	8: "Invalid credit format",
+	9: "Invalid request",
+	10: "No such account"
 }
 
 class Token {
@@ -30,7 +33,8 @@ class Token {
 
 class StatusError extends Error {
 	constructor(res) {
-		super(API_RESPONSE[res])
+		super(API_RESPONSE[res]);
+		this.status = res;
 	}
 }
 
@@ -46,8 +50,7 @@ class Gokin {
 			{id: 20505, name: "asdf2", score: 8},
 			{id: 20504, name: "asdf3", score: 5},
 			{id: 20503, name: "asdf4", score: 4},
-			{id: 20502, name: "asdf5", score: 2},
-			{id: 20501, name: "asdf6", score: 1}
+			{id: 20502, name: "asdf5", score: 2}
 		]
 	}
 
@@ -57,7 +60,8 @@ class Gokin {
 				grade: parseInt(grade),
 				class: parseInt(classId),
 				id: parseInt(id),
-				password})
+				password
+			});
 			return User.fromToken(loginData.token);
 		} catch(err) {
 			throw err;
@@ -82,9 +86,12 @@ class Gokin {
 	}
 }
 
+Gokin.StatusError = StatusError;
+
 class User {
-	constructor(token, id, credit, gold) {
+	constructor(token, id, name, credit, gold) {
 		this.id = id;
+		this.name = name;
 		this.credit = credit;
 		this.eventCredit = gold;
 		this.token = token;
@@ -109,7 +116,7 @@ class User {
 	static async fromToken(token) {
 		try {
 			const accountData = await Gokin.request('account')({token});
-			return new User(token, accountData.id, accountData.credit, accountData.gold);
+			return new User(token, accountData.id, accountData.name, accountData.credit, accountData.gold);
 		} catch(err) {
 			throw err;
 		}

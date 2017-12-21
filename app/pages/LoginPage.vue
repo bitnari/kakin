@@ -18,9 +18,9 @@
 
 				<template v-for="score, index in highScore">
 					<kn-box class="score-content">
-						<span class="rank">#{{index + 1}}</span>
-						<span class="score">{{score.score}}</span>
+						<span class="rank"># {{index + 1}}</span>
 						<span class="name">{{score.name}}</span>
+						<span class="score">{{score.score}}</span>
 					</kn-box>
 				</template>
 			</kn-box>
@@ -43,12 +43,52 @@
 		position: fixed;
 		bottom: 30px;
 		right: 30px;
-		padding: 10px;
+		padding-top: 10px;
+		background: linear-gradient(45deg, #202020, #303030);
+		/* background: linear-gradient(45deg, #0a1b33, #0d2956); */
 		/* background: rgba(255, 255, 255, .5); */
 		font-family: var(--font);
+		color: #f1f2f3;
+		font-size: 1.2rem;
 	}
 
-	.
+	.score-content {
+		/* border-radius: 5px; */
+		padding-left: 10px;
+		padding-right: 10px;
+		justify-content: center;
+		/* background: #ff9800; */
+
+		&.leaderboard {
+			color: #ff1744;
+		}
+
+		&:nth-child(2) {
+			background: #f44336;
+		}
+
+		&:nth-child(3) {
+			background: #e53935;
+		}
+
+		&:nth-child(4) {
+			background: #d32f2f;
+		}
+
+		&:nth-child(5) {
+			background: #c62828;
+		}
+
+		&:nth-child(6) {
+			background: #b71c1c;
+		}
+
+		& * {
+			padding: 10px;
+			white-space: nowrap;
+			flex: 1;
+		}
+	}
 
 	.background-tint {
 		position: absolute;
