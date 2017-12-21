@@ -1,3 +1,5 @@
+const queryString = require('query-string');
+
 const API_VERSION = 2;
 const API_RESPONSE = {
 	0: "Success",
@@ -33,6 +35,22 @@ class StatusError extends Error {
 }
 
 class Gokin {
+	static async score(token, game, score) {
+		//TODO
+	}
+
+	static async highScore(game) {
+		//TODO
+		return [
+			{id: 20506, name: "asdf", score: 10},
+			{id: 20505, name: "asdf2", score: 8},
+			{id: 20504, name: "asdf3", score: 5},
+			{id: 20503, name: "asdf4", score: 4},
+			{id: 20502, name: "asdf5", score: 2},
+			{id: 20501, name: "asdf6", score: 1}
+		]
+	}
+
 	static async login(grade, classId, id, password) {
 		try {
 			const loginData = await Gokin.request('verify')({
@@ -50,14 +68,12 @@ class Gokin {
 		return async (payload) => {
 			const request = await fetch(`/api/v${API_VERSION}/${methodName}`, {
 				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
+					Accept: "application/json",
+					"Content-Type": "application/x-www-form-urlencoded"
 				},
-
 				method: 'post',
-				body: JSON.stringify(payload)
+				body: queryString.stringify(payload)
 			});
-
 			const requestData = await request.json();
 
 			if(requestData.res === 0) return requestData;
@@ -76,7 +92,7 @@ class User {
 
 	async pay(amount) {
 		try {
-			await Gokin.request('pay')({credit: amount, token: this.token});
+			await Gokin.request('pay')({credit: parseInt(amount), token: this.token});
 		} catch(err) {
 			throw err;
 		}
@@ -100,5 +116,4 @@ class User {
 	}
 }
 
-window.Gokin = Gokin;
 export default Gokin;

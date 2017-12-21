@@ -1,3 +1,4 @@
+import AsyncComputed from 'vue-async-computed'
 import Vue from "vue";
 import Vuex from "vuex";
 import VueRouter from "vue-router";
@@ -8,6 +9,7 @@ import App from "./App.vue";
 
 import routes from "./js/routes";
 
+Vue.use(AsyncComputed)
 Vue.use(Vuex);
 Vue.use(VueRouter);
 

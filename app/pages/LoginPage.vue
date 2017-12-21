@@ -7,6 +7,24 @@
 				<component :is="context"></component>
 			</transition>
 		</kn-box>
+
+		<transition name="fade" mode="out-in">
+			<kn-box class="score-box" v-if="highScore" column>
+				<kn-box class="score-content leaderboard">
+					<span class="score">
+						Leaderboard
+					</span>
+				</kn-box>
+
+				<template v-for="score, index in highScore">
+					<kn-box class="score-content">
+						<span class="rank">#{{index + 1}}</span>
+						<span class="score">{{score.score}}</span>
+						<span class="name">{{score.name}}</span>
+					</kn-box>
+				</template>
+			</kn-box>
+		</transition>
 	</kn-main>
 </template>
 
@@ -20,6 +38,17 @@
 		background: var(--background);
 		position: relative;
 	}
+
+	.score-box {
+		position: fixed;
+		bottom: 30px;
+		right: 30px;
+		padding: 10px;
+		/* background: rgba(255, 255, 255, .5); */
+		font-family: var(--font);
+	}
+
+	.
 
 	.background-tint {
 		position: absolute;
@@ -47,9 +76,20 @@
 	.login-fade-leave-to {
 		transform: rotate(45deg) scale(0);
 	}
+
+	.fade-enter-ative {
+		opacity: 0;
+		transition: opacity .4s ease;
+	}
+
+	.fade-enter-to {
+		opacity: 1;
+	}
 </style>
 
 <script>
+	import Gokin from "../js/gokin-api"
+
 	import KnBox from "../components/KnBox.vue";
 	import KnLoginDialog from "../layouts/KnLoginDialog.vue";
 	import KnUserDialog from "../layouts/KnUserDialog.vue";
@@ -63,6 +103,12 @@
 			KnMain
 		},
 
+		asyncComputed: {
+			async highScore() {
+				return await Gokin.highScore(this.gameName);
+			}
+		},
+
 		computed: {
 			loggedIn() {
 				return this.$store.state.loggedIn;
@@ -70,6 +116,10 @@
 
 			context() {
 				return this.loggedIn ? 'kn-user-dialog' : 'kn-login-dialog';
+			},
+
+			gameName() {
+				return this.$route.params.game;
 			}
 		}
 	};

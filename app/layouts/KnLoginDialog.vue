@@ -1,7 +1,10 @@
 <template>
 	<form @submit="handleLogin($event)" class="submit-box" key="login">
 		<kn-box class="login-box" column>
-			<kn-box class="login-jumbotron">Welcome!</kn-box>
+			<kn-box class="login-jumbotron" column>
+				Welcome!
+				<span class="login-desc">새 계정 생성은 카운터에서 해주세요!</span>
+			</kn-box>
 			<kn-box class="in-box" column>
 				<kn-box class="id-box">
 					<kn-textbox ref="grade" text="학년" type="number" required></kn-textbox>
@@ -43,11 +46,16 @@
 	.login-jumbotron {
 		background: var(--blue);
 		font-weight: 100;
-		font-size: 2rem;
+		font-size: 2.4rem;
 		padding: 10px 30px;
 		color: var(--white);
-		align-items: flex-end;
+		justify-content: flex-end;
 		height: 130px;
+	}
+
+	.login-desc {
+		font-size: .9rem;
+		opacity: .8;
 	}
 
 	.button {
@@ -89,6 +97,9 @@
 						eventCredit: user.eventCredit,
 						user
 					});
+				}).catch((err) => {
+					//TODO check for exception
+					// Invalid ID or wrong password
 				});
 
 				ev.preventDefault();
