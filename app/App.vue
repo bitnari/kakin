@@ -2,7 +2,7 @@
 	<div id="app">
 		<transition name="slide-fade" mode="out-in">
 			<keep-alive>
-				<router-view></router-view>
+				<login-page></login-page>
 			</keep-alive>
 		</transition>
 	</div>
@@ -32,5 +32,11 @@
 </style>
 
 <script>
-	export default {};
+	import LoginPage from "./pages/LoginPage.vue";
+
+	export default {
+		components: {
+			LoginPage
+		}
+	};
 </script>

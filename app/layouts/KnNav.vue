@@ -3,7 +3,7 @@
 		<kn-box class="naviagtion-brand">
 			<h1>
 				<kn-icon icon="ios-analytics"></kn-icon>
-				Kakin
+				{{brand}}
 			</h1>
 		</kn-box>
 
@@ -38,6 +38,13 @@
 		components: {
 			KnBox,
 			KnIcon
+		},
+
+		props: {
+			brand: {
+				type: String,
+				default: "Kakin"
+			}
 		}
 	};
 </script>

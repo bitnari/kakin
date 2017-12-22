@@ -159,7 +159,16 @@
 			},
 
 			gameName() {
-				return this.$route.params.game;
+				const game = location.href.replace(/^kakin:\/\/kakin\/([a-z0-9-]+)/, '$1');
+				return game;
+			},
+
+			brand() {
+				return window.environment ? window.environment.getBrand() : null;
+			},
+
+			backgrond() {
+				return window.environment ? window.environment.getBackground() : null;
 			}
 		}
 	};

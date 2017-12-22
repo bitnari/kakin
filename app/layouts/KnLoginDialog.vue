@@ -52,6 +52,7 @@
 	.login-jumbotron {
 		background: var(--blue);
 		font-weight: 100;
+		font-family: var(--font);
 		font-size: 2.4rem;
 		padding: 10px 30px;
 		color: var(--white);

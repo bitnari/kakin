@@ -24,10 +24,24 @@
 	import KnNav from "./KnNav.vue";
 	import KnNavUser from "./KnNavUser.vue";
 
+	import background from "../img/background.jpg";
+
 	export default {
 		components: {
 			KnNav,
 			KnNavUser
+		},
+
+		props: {
+			brand: {
+				type: String,
+				default: "Kakin"
+			},
+
+			background: {
+				type: String,
+				default: background
+			}
 		}
 	};
 </script>

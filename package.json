@@ -8,7 +8,8 @@
     "start": "node ./src/index",
     "dev": "webpack-dev-server",
     "build": "webpack",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "electron": "electron index.js"
   },
   "repository": {
     "type": "git",
@@ -41,6 +42,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
+    "electron": "^1.7.10",
     "ionicons": "^3.0.0",
     "query-string": "^5.0.1",
     "spinkit": "^1.2.5",
