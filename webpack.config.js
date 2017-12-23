@@ -21,12 +21,15 @@ const cssExtract = ExtractTextPlugin.extract({
 });
 
 module.exports = {
-	entry: path.resolve(__dirname, 'app', 'index.js'),
+	entry: {
+		kakin: path.resolve(__dirname, 'app', 'index.js'),
+		demo: path.resolve(__dirname, 'app', 'demo.js')
+	},
 
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		publicPath: '/dist/',
-		filename: 'kakin.bundle.js'
+		filename: '[name].bundle.js'
 	},
 
 	module: {
@@ -66,7 +69,7 @@ module.exports = {
 	},
 
 	plugins: [
-		new ExtractTextPlugin('kakin.bundle.css')
+		new ExtractTextPlugin('[name].bundle.css')
 	],
 
 	resolve: {

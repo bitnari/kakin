@@ -8,6 +8,7 @@
     "start": "node ./src/index",
     "dev": "webpack-dev-server",
     "build": "webpack",
+    "build:electron": "",
     "watch": "webpack --watch",
     "electron": "electron index.js"
   },
@@ -52,5 +53,20 @@
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "whatwg-fetch": "^2.0.3"
+  },
+  "build": {
+    "productName": "kakin",
+    "appId": "org.bitnari.kakin",
+    "asar": true,
+    "protocols": {
+      "name": "kakin",
+      "schemes": ["kakin"]
+    },
+    "win": {
+      "icon": "./app/img/kakin.ico"
+    },
+    "directories": {
+      "output": "build/"
+    }
   }
 }

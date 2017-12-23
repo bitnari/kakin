@@ -1,17 +1,17 @@
 class WebEnvironment {
-	static demonstrate() {
+	demonstrate() {
 		console.log("demo")
 	}
 
-	static play(user) {
+	play(user) {
 		console.log(user)
 	}
 
-	static getBrand() {
+	getBrand() {
 		return window.document.title;
 	}
 
-	static getBackground() {
+	getBackground() {
 		return null;
 	}
 }

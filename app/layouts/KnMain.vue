@@ -1,6 +1,6 @@
 <template>
 	<main id="main">
-		<kn-nav>
+		<kn-nav :brand="brand">
 			<kn-nav-user></kn-nav-user>
 		</kn-nav>
 		<slot></slot>
@@ -24,8 +24,6 @@
 	import KnNav from "./KnNav.vue";
 	import KnNavUser from "./KnNavUser.vue";
 
-	import background from "../img/background.jpg";
-
 	export default {
 		components: {
 			KnNav,
@@ -36,11 +34,6 @@
 			brand: {
 				type: String,
 				default: "Kakin"
-			},
-
-			background: {
-				type: String,
-				default: background
 			}
 		}
 	};

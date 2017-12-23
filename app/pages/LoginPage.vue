@@ -1,6 +1,6 @@
 <template>
-	<kn-main>
-		<kn-box class="main-box">
+	<kn-main :brand="brand">
+		<kn-box class="main-box" :style="backgroundStyle">
 			<div class="background-tint"></div>
 
 			<transition name="login-fade" mode="out-in">
@@ -35,8 +35,8 @@
 		align-items: center;
 		justify-content: center;
 		flex: 1;
-		background: var(--background);
 		position: relative;
+		background-size: cover;
 	}
 
 	.score-box {
@@ -128,6 +128,7 @@
 </style>
 
 <script>
+	import background from "../img/background.jpg";
 	import Gokin from "../js/gokin-api"
 
 	import KnBox from "../components/KnBox.vue";
@@ -163,12 +164,18 @@
 				return game;
 			},
 
-			brand() {
-				return window.environment ? window.environment.getBrand() : null;
+			environment() {
+				return this.$store.state.environment;
 			},
 
-			backgrond() {
-				return window.environment ? window.environment.getBackground() : null;
+			brand() {
+				return this.environment ? this.environment.getBrand() : null;
+			},
+
+			backgroundStyle() {
+				return {
+					backgroundImage: `url("${this.environment ? this.environment.getBackground() : background}")`
+				};
 			}
 		}
 	};

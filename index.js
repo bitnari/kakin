@@ -1,24 +1,35 @@
 const {app, BrowserWindow, ipcMain, protocol} = require('electron');
-const {exec} = require('child_process')
+const {spawn} = require('child_process')
 const fs = require('fs');
 const path = require('path');
 
-let mainWindow, currentUser, currentProcess, currentScore, payingInProcess = false;
+let currentUser, currentProcess, currentScore;
+let mainWindow, demoWindow, webWindow;
+let payingInProcess = false;
+
+// unix-style normalize
+const unormalize = (str) => {
+	return path.normalize(str).replace(/\\/g, '/');
+};
 
 const parseGameData = (gameData) => {
 	lines = gameData.split(/\r?\n/);
 	return {
-		identifier: lines[0],
-		name: lines[1],
-		background: path.resolve('./game', lines[2]),
-		start: path.resolve('./game', lines[3])
+		type: lines[0],
+		identifier: lines[1],
+		name: lines[2],
+		background: unormalize(path.join('/game', lines[3])),
+		start: lines[4]
 	};
 };
 
 const gameData = parseGameData(fs.readFileSync(path.resolve('./game', 'game.dat'), 'utf-8'));
 
-const createWindow = () => {
-	mainWindow = new BrowserWindow({width: 1280, height: 720});
+const createWindow = (cb = () => {}) => {
+	mainWindow = new BrowserWindow({width: 1280, height: 720, frame: false});
+	mainWindow.maximize();
+	mainWindow.setKiosk(true);
+	mainWindow.webContents.once('did-finish-load', cb);
 	mainWindow.loadURL(`kakin://kakin/${gameData.identifier}/?${
 		Buffer(JSON.stringify(gameData), 'binary').toString('base64')
 	}`);
@@ -28,12 +39,44 @@ const createWindow = () => {
 	});
 };
 
+const closeWindow = () => {
+	ipcMain.on('close', () => mainWindow.close());
+	mainWindow.webContents.send('close');
+};
+
 ipcMain.on('play', (user) => {
 	if(currentUser) return;
-	mainWindow.close();
+	closeWindow();
 
 	currentUser = user;
-	currentProcess = exec(`python ${gameData.start}`);
+
+	if(gameData.type === 'web') {
+		webWindow.show();
+		webWindow.loadURL(`kakin://kakin/web/?${
+			Buffer(`${gameData.start}#${
+				Buffer(user.name, 'binary').toString('base64')
+			}`, 'binary').toString('base64')
+		}`);
+
+		ipcMain.once('play-finished', (score) => {
+			createWindow(() => {
+				mainWindow.webContents.send('score', {
+					token: currentUser.token,
+					score
+				});
+			});
+
+			webWindow.hide();
+			currentUser = null;
+		});
+
+		return;
+	}
+
+	currentProcess = spawn('python', [gameData.start], {
+		cwd: path.resolve('./game')
+	});
+
 	currentProcess.stdout.on('data', (chunk) => {
 		if(!chunk.startsWith('kakin:do-method:')) return;
 
@@ -44,7 +87,7 @@ ipcMain.on('play', (user) => {
 				if(payingInProcess) break;
 
 				payingInProcess = true;
-				ipcMain.emit('pay', parseInt(method[1]));
+				mainWindow.webContents.send('pay', parseInt(method[1]));
 
 				ipcMain.once('pay-data', (result) => {
 					payingInProcess = false;
@@ -58,11 +101,11 @@ ipcMain.on('play', (user) => {
 	});
 
 	currentProcess.on('close', (closed) => {
-		mainWindow.show();
-
-		ipcMain.send('score', {
-			token: currentUser.token,
-			score: currentScore
+		createWindow(() => {
+			mainWindow.webContents.send('score', {
+				token: currentUser.token,
+				score: currentScore
+			});
 		});
 
 		currentProcess = null;
@@ -72,39 +115,90 @@ ipcMain.on('play', (user) => {
 });
 
 ipcMain.on('demo', () => {
-
 	if(currentUser) return;
-	currentUser = null;
-	currentProcess = exec(`python ${gameData.start}`);
+	if(gameData.type === 'web') return;
+
+	currentUser = {demo: true};
+	currentProcess = spawn('python', [gameData.start], {
+		cwd: path.resolve('./game')
+	});
+
+	demoWindow = new BrowserWindow({
+		width: 250,
+		height: 250,
+		transparent: true,
+		frame: false,
+		toolbar: false
+	});
+	demoWindow.loadURL('kakin://kakin/demo');
+	demoWindow.setAlwaysOnTop(true);
+	demoWindow.center();
 
 	setTimeout(() => {
-		mainWindow.show();
+		createWindow(() => {
+			mainWindow.webContents.send('demo-end');
+		});
+
+		demoWindow.close();
+
 		currentProcess.kill();
-		ipcMain.emit('demo-end');
 
 		currentUser = null;
 		currentProcess = null;
 	}, 20000);
 
-	mainWindow.close();
+	closeWindow();
 });
 
 app.on('window-all-closed', () => {
-	app.quit();
+	if(!currentUser) {
+		createWindow()
+	}
 });
 
 app.on('ready', () => {
 	protocol.registerFileProtocol('kakin', (req, cb) => {
-		const requestPath = req.url.replace(/^kakin:\/\/kakin\//, '').replace(/\?.*/, '');
+		const requestPath = req.url
+			.replace(/^kakin:\/\/kakin\//, '')
+			.replace(/\?.*/, '').replace(/\#.*/, '');
 
 		if(/^[a-z0-9-]+\/$/.test(requestPath)) {
-			cb(path.normalize(path.join(__dirname, 'electron.html')));
+			cb(path.resolve(__dirname, 'views', 'electron.html'));
 			return;
 		}
 
-		const fullUrl = path.normalize(path.join(__dirname, requestPath));
+		if(requestPath === 'demo') {
+			cb(path.resolve(__dirname, 'views', 'demo.html'));
+			return;
+		}
+
+		if(requestPath === 'web') {
+			cb(path.resolve(__dirname, 'views', 'web.html'));
+			return;
+		}
+
+		if(requestPath === 'favicon.ico') {
+			cb(path.resolve(__dirname, 'app', 'img', 'kakin.ico'));
+			return;
+		}
+
+		if(requestPath === 'favicon.png') {
+			cb(path.resolve(__dirname, 'app', 'img', 'kakin.png'));
+			return;
+		}
+
+		const fullUrl = path.resolve(__dirname, requestPath);
 		cb(fullUrl);
 	});
 
 	createWindow();
+	if(gameData.type === 'web') {
+		webWindow = new BrowserWindow({
+			width: 1280,
+			height: 720,
+			toolbar: false
+		});
+
+		webWindow.hide();
+	}
 });

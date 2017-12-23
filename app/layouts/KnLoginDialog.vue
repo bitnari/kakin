@@ -18,7 +18,7 @@
 					<kn-icon icon="ios-send-outline"></kn-icon>
 				</kn-button>
 
-				<kn-button class="button demo-button" type="button" :click="demo">
+				<kn-button class="button demo-button" type="button" :click="demo" v-if="canDemo">
 					Demo
 				</kn-button>
 			</kn-box>
@@ -96,14 +96,30 @@
 			KnTextbox
 		},
 
+		computed: {
+			environment() {
+				return this.$store.state.environment;
+			},
+			
+			canDemo() {
+				return this.environment ? this.environment.gameData.type !== 'web' : true;
+			}
+		},
+
 		methods: {
-			handleLogin(ev) {
-				Gokin.login(
-					this.$refs.grade.value,
-					this.$refs['class'].value,
-					this.$refs.number.value,
-					this.$refs.password.value
-				).then((user) => {
+			async handleLogin(ev) {
+				ev.preventDefault();
+
+				try {
+					const user = await Gokin.login(
+						this.$refs.grade.value,
+						this.$refs['class'].value,
+						this.$refs.number.value,
+						this.$refs.password.value
+					);
+
+					await user.pay(1);
+
 					this.$store.commit('login', {
 						username: user.id,
 						credit: user.credit,
@@ -111,37 +127,42 @@
 						user
 					});
 
-					setTimeout(() => window.environment.play(user), 5000);
+					setTimeout(() => this.environment.play(user), 5000);
 
-				}).catch((err) => {
+				} catch(err) {
 					if(!err instanceof Gokin.StatusError) {
 						swal("Oops!", "에러가 발생했습니다. T_T<br>카운터에 문의해주세요.", "error");
-					} else{
-						switch(err.status) {
-							case 2:
-								swal("아이디가 잘못되었습니다.", "학년 반 번호를 다시 확인해주세요.", "warning");
-								break;
-
-							case 4:
-								swal("비밀번호가 잘못되었습니다.", "비밀번호를 다시 한 번 확인해주세요.", "warning");
-								break;
-
-							case 10:
-								swal("계정을 만들어주세요!",
-									"현재 학번에 해당하는 계정이 없습니다.<br>카운터에서 계정을 만들어주세요.", "warning");
-								break;
-
-							default:
-								swal("Oops!", "에러가 발생했습니다. T_T<br>카운터에 문의해주세요.", "error");
-						}
+						console.error(err);
+						return;
 					}
-				});
 
-				ev.preventDefault();
+					switch(err.status) {
+						case 2:
+							swal("아이디가 잘못되었습니다.", "학년 반 번호를 다시 확인해주세요.", "warning");
+							break;
+
+						case 4:
+							swal("비밀번호가 잘못되었습니다.", "비밀번호를 다시 한 번 확인해주세요.", "warning");
+							break;
+
+						case 7:
+							swal("코인이 부족합니다. T_T", "카운터에서 충전해주세요.", "info");
+							break;
+
+						case 10:
+							swal("계정을 만들어주세요!",
+								"현재 학번에 해당하는 계정이 없습니다.<br>카운터에서 계정을 만들어주세요.", "warning");
+							break;
+
+						default:
+							console.error(err);
+							swal("Oops!", "에러가 발생했습니다. T_T<br>카운터에 문의해주세요.", "error");
+					}
+				}
 			},
 
 			demo() {
-				window.environment.demonstrate();
+				this.environment.demonstrate();
 			}
 		}
 	}

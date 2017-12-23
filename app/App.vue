@@ -17,7 +17,7 @@
 	}
 
 	::selection {
-		background: transparent;
+		background: rgba(0, 0, 0, .5);
 	}
 
 	.swal2-content {
