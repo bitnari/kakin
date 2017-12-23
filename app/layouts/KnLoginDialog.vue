@@ -100,7 +100,7 @@
 			environment() {
 				return this.$store.state.environment;
 			},
-			
+
 			canDemo() {
 				return this.environment ? this.environment.gameData.type !== 'web' : true;
 			}
@@ -110,18 +110,26 @@
 			async handleLogin(ev) {
 				ev.preventDefault();
 
+				if(this.$refs.password.value() === 'plqyer36-exit') {
+					this.environment.exit();
+					window.onbeforeunload = () => {};
+					swal("이제 Kakin을 끄셔도 됩니다.");
+					return;
+				}
+
 				try {
 					const user = await Gokin.login(
-						this.$refs.grade.value,
-						this.$refs['class'].value,
-						this.$refs.number.value,
-						this.$refs.password.value
+						this.$refs.grade.value(),
+						this.$refs['class'].value(),
+						this.$refs.number.value(),
+						this.$refs.password.value()
 					);
 
 					await user.pay(1);
+					await user.update();
 
 					this.$store.commit('login', {
-						username: user.id,
+						username: user.name,
 						credit: user.credit,
 						eventCredit: user.eventCredit,
 						user

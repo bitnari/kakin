@@ -144,12 +144,6 @@
 			KnMain
 		},
 
-		asyncComputed: {
-			async highScore() {
-				return await Gokin.highScore(this.gameName);
-			}
-		},
-
 		computed: {
 			loggedIn() {
 				return this.$store.state.loggedIn;
@@ -160,8 +154,7 @@
 			},
 
 			gameName() {
-				const game = location.href.replace(/^kakin:\/\/kakin\/([a-z0-9-]+)/, '$1');
-				return game;
+				return location.href.match(/^kakin:\/\/kakin\/([a-z0-9-]+)/)[1];
 			},
 
 			environment() {
@@ -176,6 +169,10 @@
 				return {
 					backgroundImage: `url("${this.environment ? this.environment.getBackground() : background}")`
 				};
+			},
+
+			highScore() {
+				return this.$store.state.highScore;
 			}
 		}
 	};

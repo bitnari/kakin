@@ -20,7 +20,7 @@
 			}
 		},
 
-		computed: {
+		methods: {
 			value() {
 				return this.$el.value;
 			}

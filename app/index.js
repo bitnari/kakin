@@ -1,4 +1,3 @@
-import AsyncComputed from 'vue-async-computed'
 import Vue from "vue";
 import Vuex from "vuex";
 import "babel-polyfill";
@@ -11,7 +10,6 @@ import App from "./App.vue";
 import ElectronEnvironment from "./js/environment.electron.js";
 import WebEnvironment from "./js/environment.web.js";
 
-Vue.use(AsyncComputed)
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -20,7 +18,8 @@ const store = new Vuex.Store({
 		username: '',
 		credit: 0,
 		eventCredit: 0,
-		environment: null
+		environment: null,
+		highScore: []
 	},
 
 	mutations: {
@@ -34,6 +33,10 @@ const store = new Vuex.Store({
 
 		environment(state, env) {
 			state.environment = env;
+		},
+
+		highScore(state, highScore) {
+			state.highScore = highScore;
 		}
 	}
 });
@@ -46,6 +49,7 @@ new Vue({
 	}
 });
 
-window.setEnvironment = (env)  => store.commit('environment', env);
+window.store = store;
+window.setEnvironment = (env) => store.commit('environment', env);
 window.ElectronEnvironment = ElectronEnvironment;
 window.WebEnvironment = WebEnvironment;

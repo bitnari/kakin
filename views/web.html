@@ -34,15 +34,29 @@
 			const {ipcRenderer} = require('electron');
 
 			const showTarget = location.href.match(/\?(.*)$/)[1];
+			let closeRequested = false;
 
 			const iframe = document.createElement('iframe');
-			iframe.src = showTarget;
+			iframe.src = decodeURIComponent(atob(showTarget));
+
+			ipcRenderer.on('close', () => {
+				closeRequested = true;
+				ipcRenderer.send('close');
+			});
 
 			window.addEventListener('message', (ev) => {
-				ipcMain.send(ev.data);
+				ipcRenderer.send('play-finished', ev.data);
 			});
-			
+
 			document.body.append(iframe);
+
+			window.onbeforeunload = () => {
+				if(closeRequested) {
+					return;
+				}
+
+				return false;
+			};
 		</script>
 	</body>
 </html>

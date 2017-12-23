@@ -6,6 +6,7 @@ const path = require('path');
 let currentUser, currentProcess, currentScore;
 let mainWindow, demoWindow, webWindow;
 let payingInProcess = false;
+let quitOnEnd = false;
 
 // unix-style normalize
 const unormalize = (str) => {
@@ -29,9 +30,10 @@ const createWindow = (cb = () => {}) => {
 	mainWindow = new BrowserWindow({width: 1280, height: 720, frame: false});
 	mainWindow.maximize();
 	mainWindow.setKiosk(true);
+	mainWindow.setAlwaysOnTop(true);
 	mainWindow.webContents.once('did-finish-load', cb);
 	mainWindow.loadURL(`kakin://kakin/${gameData.identifier}/?${
-		Buffer(JSON.stringify(gameData), 'binary').toString('base64')
+		Buffer.from(encodeURIComponent(JSON.stringify(gameData)), 'utf8').toString('base64')
 	}`);
 
 	mainWindow.on('closed', function() {
@@ -40,34 +42,49 @@ const createWindow = (cb = () => {}) => {
 };
 
 const closeWindow = () => {
-	ipcMain.on('close', () => mainWindow.close());
+	ipcMain.once('close', () => mainWindow.close());
 	mainWindow.webContents.send('close');
 };
 
-ipcMain.on('play', (user) => {
+ipcMain.on('shutdown', () => {
+	quitOnEnd = true;
+});
+
+ipcMain.on('play', (ev, user) => {
 	if(currentUser) return;
 	closeWindow();
 
 	currentUser = user;
 
 	if(gameData.type === 'web') {
-		webWindow.show();
-		webWindow.loadURL(`kakin://kakin/web/?${
-			Buffer(`${gameData.start}#${
-				Buffer(user.name, 'binary').toString('base64')
-			}`, 'binary').toString('base64')
+		webWindow = new BrowserWindow({
+			width: 1280,
+			height: 720,
+			toolbar: false,
+			frame: false
+		});
+
+		webWindow.maximize();
+		webWindow.setKiosk(true);
+		webWindow.loadURL(`kakin://kakin/web?${
+			Buffer.from(`${encodeURIComponent(gameData.start)}#${
+				Buffer.from(encodeURIComponent(currentUser.name), 'utf8').toString('base64')
+			}`, 'utf8').toString('base64')
 		}`);
 
-		ipcMain.once('play-finished', (score) => {
-			createWindow(() => {
-				mainWindow.webContents.send('score', {
-					token: currentUser.token,
-					score
+		ipcMain.once('play-finished', (ev, score) => {
+			ipcMain.once('close', () => {
+				webWindow.close();
+				createWindow(() => {
+					mainWindow.webContents.send('score', {
+						token: currentUser.token,
+						score
+					});
+
+					currentUser = null;
 				});
 			});
-
-			webWindow.hide();
-			currentUser = null;
+			webWindow.webContents.send('close');
 		});
 
 		return;
@@ -89,7 +106,7 @@ ipcMain.on('play', (user) => {
 				payingInProcess = true;
 				mainWindow.webContents.send('pay', parseInt(method[1]));
 
-				ipcMain.once('pay-data', (result) => {
+				ipcMain.once('pay-data', (ev, result) => {
 					payingInProcess = false;
 					currentProcess.stdin.write(result.toString());
 				});
@@ -106,11 +123,10 @@ ipcMain.on('play', (user) => {
 				token: currentUser.token,
 				score: currentScore
 			});
+			currentUser = null;
+			currentScore = 0;
 		});
-
 		currentProcess = null;
-		currentUser = null;
-		currentScore = 0;
 	});
 });
 
@@ -151,6 +167,11 @@ ipcMain.on('demo', () => {
 });
 
 app.on('window-all-closed', () => {
+	if(quitOnEnd) {
+		app.quit();
+		return;
+	}
+
 	if(!currentUser) {
 		createWindow()
 	}
@@ -162,11 +183,6 @@ app.on('ready', () => {
 			.replace(/^kakin:\/\/kakin\//, '')
 			.replace(/\?.*/, '').replace(/\#.*/, '');
 
-		if(/^[a-z0-9-]+\/$/.test(requestPath)) {
-			cb(path.resolve(__dirname, 'views', 'electron.html'));
-			return;
-		}
-
 		if(requestPath === 'demo') {
 			cb(path.resolve(__dirname, 'views', 'demo.html'));
 			return;
@@ -174,6 +190,11 @@ app.on('ready', () => {
 
 		if(requestPath === 'web') {
 			cb(path.resolve(__dirname, 'views', 'web.html'));
+			return;
+		}
+
+		if(/^[a-z0-9-]+\/$/.test(requestPath)) {
+			cb(path.resolve(__dirname, 'views', 'electron.html'));
 			return;
 		}
 
@@ -192,13 +213,4 @@ app.on('ready', () => {
 	});
 
 	createWindow();
-	if(gameData.type === 'web') {
-		webWindow = new BrowserWindow({
-			width: 1280,
-			height: 720,
-			toolbar: false
-		});
-
-		webWindow.hide();
-	}
 });

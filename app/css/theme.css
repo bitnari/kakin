@@ -8,7 +8,7 @@
 	--font: 'NanumSquare', sans-serif;
 
 	--background: url('../img/background.jpg');
-	--background-color: var(--white);
+	--background-color: var(--grey);
 
 	--button-background: var(--blue);
 	--button-color: var(--white);

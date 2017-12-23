@@ -44,16 +44,19 @@ class Gokin {
 		try {
 			await Gokin.request('score')({gameId: game, score, token});
 		} catch(err) {
+			console.error(err);
 			throw err;
 		}
 	}
 
 	static async highScore(game, limit=5) {
 		try {
+			console.log(game);
 			const res = await Gokin.request('rank')({
 				game, limit: 5
 			});
 
+			console.log(res);
 			return JSON.parse(res.rank);
 		} catch(err) {
 			throw err;
@@ -122,6 +125,18 @@ class User {
 	async renew() {
 		try {
 			await Gokin.request('renew')({token: this.token});
+		} catch(err) {
+			throw err;
+		}
+	}
+
+	async update() {
+		try {
+			const accountData = await Gokin.request('account')({token: this.token});
+			this.id = accountData.id;
+			this.name = accountData.name;
+			this.credit = accountData.credit;
+			this.gold = accountData.gold;
 		} catch(err) {
 			throw err;
 		}
