@@ -6,8 +6,7 @@ const API_RESPONSE = {
 	0: "Success",
 	1: "Unknown Error while processing",
 	2: "Invalid ID Format",
-	3: "The part, which cannot be exist, f**ing surprising, pissing over the arirang hill and bird is singing, like " +
-		"let-it-go and silent, silent night is occured.",
+	3: "Account already exists.",
 	4: "Wrong password",
 	5: "Format of token is incorrect",
 	6: "Token does not exist or expired",
