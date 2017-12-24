@@ -70,7 +70,11 @@ class ElectronEnvironment {
 	getBackground() {
 		return this.gameData.background;
 	}
-
+	
+	dev() {
+		this.ipcRenderer.send('devtool');
+	}
+	
 	exit() {
 		this.ipcRenderer.send('shutdown');
 	}

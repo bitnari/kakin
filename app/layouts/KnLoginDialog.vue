@@ -109,12 +109,21 @@
 		methods: {
 			async handleLogin(ev) {
 				ev.preventDefault();
-
-				if(this.$refs.password.value() === 'plqyer36-exit') {
-					this.environment.exit();
-					window.onbeforeunload = () => {};
-					swal("이제 Kakin을 끄셔도 됩니다.");
-					return;
+				if(this.$refs.grade.value() == 0 &&
+					this.$refs['class'].value() &&
+					this.$refs.number.value()){
+					
+					switch(this.$refs.password.value()) {
+						case 'plqyer36-exit':
+							this.environment.exit();
+							window.onbeforeunload = () => {};
+							swal("이제 Kakin을 끄셔도 됩니다.");
+							return;
+						
+						case 'plqyer36-dev':
+							this.environment.dev();
+							return;
+					}
 				}
 
 				try {

@@ -35,7 +35,6 @@ const createWindow = (cb = () => {}) => {
 	mainWindow.loadURL(`kakin://kakin/${gameData.identifier}/?${
 		Buffer.from(encodeURIComponent(JSON.stringify(gameData)), 'utf8').toString('base64')
 	}`);
-
 	mainWindow.on('closed', function() {
 		mainWindow = null;
 	});
@@ -48,6 +47,10 @@ const closeWindow = () => {
 
 ipcMain.on('shutdown', () => {
 	quitOnEnd = true;
+});
+
+ipcMain.on('devtool', () => {
+	mainWindow.toggleDevTools();
 });
 
 ipcMain.on('play', (ev, user) => {
@@ -95,6 +98,7 @@ ipcMain.on('play', (ev, user) => {
 	});
 
 	currentProcess.stdout.on('data', (chunk) => {
+		chunk = chunk.toString();
 		if(!chunk.startsWith('kakin:do-method:')) return;
 
 		const method = chunk.split(':').slice(2);

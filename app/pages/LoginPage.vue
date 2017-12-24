@@ -25,11 +25,23 @@
 				</template>
 			</kn-box>
 		</transition>
+		<span id="version">Kakin v1.0.0</span>
 	</kn-main>
 </template>
 
 <style scoped>
 	@import "theme";
+
+	#version {
+		position: fixed;
+		bottom: 30px;
+		left: 30px;
+		font-family: var(--font);
+		color: #f1f2f3;
+		font-size: 1.2rem;
+		background: rgba(0, 0, 0, .5);
+		padding: 10px;
+	}
 
 	.main-box {
 		align-items: center;

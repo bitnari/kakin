@@ -78,7 +78,9 @@ module.exports = {
 		}
 	},
 
-	devtool: '#eval-source-map'
+	devtool: '#eval-source-map',
+
+	target: 'electron'
 };
 
 if(process.env.NODE_ENV === 'production'){

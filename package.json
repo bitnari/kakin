@@ -8,7 +8,9 @@
     "start": "node ./src/index",
     "dev": "webpack-dev-server",
     "build": "webpack",
-    "build:electron": "",
+    "build:electron:win": "npm run build:electron:win32 && npm run build:electron:win64",
+    "build:electron:win32": "electron-builder --win --ia32",
+    "build:electron:win64": "electron-builder --win --x64",
     "watch": "webpack --watch",
     "electron": "electron index.js"
   },
@@ -27,6 +29,8 @@
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
     "css-loader": "^0.28.7",
+    "electron": "^1.7.10",
+    "electron-builder": "^19.49.2",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.5",
     "postcss-browser-reporter": "^0.5.0",
@@ -43,11 +47,11 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "electron": "^1.7.10",
     "ionicons": "^3.0.0",
     "query-string": "^5.0.1",
     "spinkit": "^1.2.5",
     "sweetalert2": "^7.1.2",
+    "typeface-nanum-square": "^1.1.0",
     "vue": "^2.5.3",
     "vue-async-computed": "^3.3.1",
     "vue-router": "^3.0.1",
@@ -55,12 +59,14 @@
     "whatwg-fetch": "^2.0.3"
   },
   "build": {
-    "productName": "kakin",
+    "productName": "Kakin",
     "appId": "org.bitnari.kakin",
     "asar": true,
     "protocols": {
       "name": "kakin",
-      "schemes": ["kakin"]
+      "schemes": [
+        "kakin"
+      ]
     },
     "win": {
       "icon": "./app/img/kakin.ico"

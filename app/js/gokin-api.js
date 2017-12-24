@@ -1,6 +1,6 @@
 const queryString = require('query-string');
 
-const API_ROOT = "http://localhost:8080";
+const API_ROOT = "https://gokin.onebone.me";
 const API_VERSION = 2;
 const API_RESPONSE = {
 	0: "Success",
