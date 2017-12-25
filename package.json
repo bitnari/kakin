@@ -1,6 +1,6 @@
 {
   "name": "kakin",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A server to manage user and money",
   "main": "index.js",
   "scripts": {
@@ -8,9 +8,7 @@
     "start": "node ./src/index",
     "dev": "webpack-dev-server",
     "build": "webpack",
-    "build:electron:win": "npm run build:electron:win32 && npm run build:electron:win64",
-    "build:electron:win32": "electron-builder --win --ia32",
-    "build:electron:win64": "electron-builder --win --x64",
+    "build:electron:win": "node build",
     "watch": "webpack --watch",
     "electron": "electron index.js"
   },
@@ -57,22 +55,5 @@
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "whatwg-fetch": "^2.0.3"
-  },
-  "build": {
-    "productName": "Kakin",
-    "appId": "org.bitnari.kakin",
-    "asar": true,
-    "protocols": {
-      "name": "kakin",
-      "schemes": [
-        "kakin"
-      ]
-    },
-    "win": {
-      "icon": "./app/img/kakin.ico"
-    },
-    "directories": {
-      "output": "build/"
-    }
   }
 }

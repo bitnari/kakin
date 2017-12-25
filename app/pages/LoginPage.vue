@@ -25,7 +25,7 @@
 				</template>
 			</kn-box>
 		</transition>
-		<span id="version">Kakin v1.0.0</span>
+		<span id="version">Kakin v1.0.2</span>
 	</kn-main>
 </template>
 

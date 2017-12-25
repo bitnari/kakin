@@ -212,7 +212,12 @@ app.on('ready', () => {
 			return;
 		}
 
-		const fullUrl = path.resolve(__dirname, requestPath);
+		let basePath = __dirname;
+		if(requestPath.startsWith('game')) {
+			basePath = '.'
+		}
+
+		fullUrl = path.resolve(basePath, requestPath);
 		cb(fullUrl);
 	});
 
